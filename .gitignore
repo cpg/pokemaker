@@ -16,3 +16,8 @@ tmp
 .yardoc
 _yardoc
 doc/
+pokegts.db
+*.redcar
+*.lock
+.DS_Store
+.sass-cache

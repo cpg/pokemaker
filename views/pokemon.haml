@@ -1,0 +1,67 @@
+%html
+  %head
+    %title= @pkm.structure.nickname
+    %link{:href => "/css/main", :rel => "stylesheet", :type => "text/css"}/
+    %link{:href => "/css/ui-darkness/jquery-ui-1.8.2.custom.css", :rel => "stylesheet", :type => "text/css"}/
+    %script{:src=> "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"}
+    %script{:src=> "//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"}
+  %body
+    %h1= @pkm.structure.nickname
+    .pokemon{:id=>@pkm.id}
+      - poke = @pkm.structure
+      .header
+        %p.attr.dex.alt= "##{poke.dex}"
+        %p.level= poke.level
+        %img#picon{:src=>poke.image}
+        %p.attr.name.alt= poke.nickname
+        %p= poke.trainer
+        %p.attr.exp.alt= "#{poke.exp}"
+        %p.sex= "#{poke.sex}"
+        %p.alt= poke.nature.name
+        %p#pokemon.attr= poke.name
+        %p.alt= "#{poke.helditem}"       
+      .body        
+        - ivs = poke.ivs
+        - evs = poke.evs
+        .colh
+          %p.alt.subh Stat
+          %p.alt HP
+          %p Attack
+          %p.alt Defence
+          %p Special Attack
+          %p.alt Special Defence
+          %p Speed
+          %p.alt Total
+        .stat
+          %p.alt.subh IVs
+          - ivs.size.times do |i|
+            - if i.even?
+              %p.attr.alt{:id=>"iv#{i}"}= ivs[i]
+            - else
+              %p.attr{:id=>"iv#{i}"}= ivs[i]
+          %p.ivt.alt= "#{ivs[0] + ivs[1] + ivs[2] + ivs[3] + ivs[4] + ivs[5]}"
+        .stat
+          %p.alt.subh EVs
+          - evs.size.times do |i|
+            - if i.even?
+              %p.attr.alt{:id=>"ev#{i}"}= evs[i]
+            - else
+              %p.attr{:id=>"ev#{i}"}= evs[i]
+          %p.evt.alt= "#{evs[0] + evs[1] + evs[2] + evs[3] + evs[4] + evs[5]}"
+        .col
+          %p.alt.subh Moves
+          - poke.moves.size.times do |i|
+            - move = Move.first(:id=>poke.moves[i])
+            - move = move.name unless move.nil?
+            - move = "None" if move.nil?
+            - if i.even?
+              %p.move.attr.alt{:id=>"mv#{i}"}= move
+            - else
+              %p.move.attr{:id=>"mv#{i}"}= move
+    %br
+    #new_post 
+      - if auth?
+        %a{:href => "/trainer/#{@trainer.id}/profile"} Profile
+        %a{:href => "/trainer/logout"} Logout   
+      - else 
+        %a{:href => "/trainer/login"} Login              
