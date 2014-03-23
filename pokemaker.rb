@@ -22,6 +22,10 @@ require "./lib/models.rb"
 require "./lib/poketext.rb"
 require "./lib/pokedex.rb"
 
+INITIAL_USER_ID=123456
+INITIAL_ADMIN_USER="admin"
+INITIAL_ADMIN_PASSWORD="pokemaker"
+
 DataMapper.setup(:default, "sqlite:./pokegts.db")
 DataMapper.setup(:pokedex, "sqlite:./pokedex.db")
 
@@ -60,8 +64,8 @@ before do
 		@trainer = Trainer.first_or_create(:tid=>session[:pid])
 		if @trainer.monsters.empty?
 			welpkm = @trainer.monsters.new
-			welpkm.blob = Trainer.first(:name=>"admin").monsters.first.blob
-			welpkm.extra = Trainer.first(:name=>"admin").monsters.first.extra
+			welpkm.blob = Trainer.first(:name=>INITIAL_ADMIN_USER).monsters.first.blob
+			welpkm.extra = Trainer.first(:name=>INITIAL_ADMIN_USER).monsters.first.extra
 			welpkm.queue = true
 			welpkm.save
 		end
@@ -75,9 +79,9 @@ before do
 end
 
 get "/system/initialize" do
-	promo = User.first_or_create(:id=>1, :fbid => 475218371, :name=>"admin")
+	promo = User.first_or_create(:id=>1, :fbid => INITIAL_USER_ID, :name=>INITIAL_ADMIN_USER, :pass => INITIAL_ADMIN_PASSWORD)
 	promo.save
-	trainer = promo.trainers.first_or_create(:id=>1, :tid => 475218371, :name=>"admin")
+	trainer = promo.trainers.first_or_create(:id=>1, :tid => INITIAL_USER_ID, :name=>INITIAL_ADMIN_USER, :pass => INITIAL_ADMIN_PASSWORD)
 	trainer.reg = true
 	trainer.save
 	rio('pkm').files('*.pkm') do |data|
